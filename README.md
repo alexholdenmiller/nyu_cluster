@@ -1,13 +1,4 @@
-# Local dependencies
-
-Create a free account on wandb.ai
-
-```
-pip install --upgrade wandb hydra-core
-wandb login
-```
-
-# HPC Setup
+# Setup
 
 This section installs et and uses it to connect to the HPC cluster.
 You'll need to install Cisco AnyConnect and then connect to the VPN.
@@ -31,4 +22,24 @@ bash Miniconda3-py39_4.10.3-Linux-x86_64.sh
 Install pytorch.
 ```
 conda install pytorch torchvision torchaudio cudatoolkit=11.1 -c pytorch -c nvidia
+```
+
+Create a free account on wandb.ai
+
+```
+pip install --upgrade wandb hydra-core hydra-submitit-launcher
+wandb login
+```
+
+
+# Test
+
+First, try running the program locally:
+```
+python scratch.py
+```
+
+Then, try to launch it on a GPU server by adding the `-m` flag (for `--multirun`).
+```
+python scratch.py -m name=1
 ```

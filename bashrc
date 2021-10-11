@@ -101,3 +101,9 @@ export EDITOR=`which vim`
 
 alias py='python'
 alias pyd='python -m pdb -c c'
+
+
+git config --global alias.b branch
+git config --global alias.ch checkout
+git config --global alias.cm commit
+git config --global alias.st status
