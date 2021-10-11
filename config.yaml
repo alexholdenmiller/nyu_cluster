@@ -1,0 +1,25 @@
+# SLURM config
+defaults:
+  - override hydra/launcher: submitit_slurm
+
+hydra:
+  launcher:
+    timeout_min: 3600
+    max_num_timeout: 0     # increase if you support requeuing / preemption
+    cpus_per_gpu: 6
+    gpus_per_node: 1
+    mem_per_gpu: 16
+    partition: null
+    comment: null
+
+# weights and biases config
+wandb: False     # prefer to override this on commandline to avoid cluttering your wandb profile
+wbentity: null     # I think this defaults to the `wandb login` user, so no need to override
+wbproject: scratch     # set this to appropriate project name
+
+name: null     # name=1,2,3 is a convenient way to schedule repeats with the same other hyperparameters
+
+cuda: true     # override to manually disable cuda, otherwise will use gpu if available (silently switches to cpu if not)
+
+log_freq: 5     # frequency of logging in *seconds*
+
