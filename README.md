@@ -48,6 +48,10 @@ pip install --upgrade wandb hydra-core hydra-submitit-launcher
 wandb login
 ```
 
+# not raedy
+
+singularity exec --nv --overlay $SCRATCH/overlay-50G-10M.ext3:ro /scratch/work/public/singularity/cuda11.1.1-cudnn8-devel-ubuntu20.04.sif /bin/bash
+module load cuda/11.1.74 
 
 # Test
 

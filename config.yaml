@@ -4,15 +4,16 @@ defaults:
 
 hydra:
   launcher:
+    gres: gpu:1     # use this on the nyu greene cluster instead of partition
     timeout_min: 1435     # just less than 1 day
     max_num_timeout: 0     # increase if you support requeuing / preemption
     tasks_per_node: 1
     cpus_per_task: 6
     gpus_per_node: 1
     nodes: 1
-    mem_per_gpu: 16
-    partition: null
-    comment: null
+    mem_per_gpu: 16     # don't go nuts
+    partition: null     # don't use this
+    comment: null     # optionally use this to tell others on the cluster what your job is up to
 
 # weights and biases config
 wandb: False     # prefer to override this on commandline to avoid cluttering your wandb profile
