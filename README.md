@@ -10,13 +10,30 @@ ssh {netid}@greene.hpc.nyu.edu
 
 Copy a proper .bashrc file to the cluster (included one in this directory).
 ```
-ssh bashrc {netid}@greene.hpc.nyu.edu:~/.bashrc
+scp bashrc {netid}@greene.hpc.nyu.edu:~/.bashrc
 ```
 
-Then, on the cluster, install miniconda.
+Then, on the cluster, run tmux.
 ```
-wget https://repo.anaconda.com/miniconda/Miniconda3-py39_4.10.3-Linux-x86_64.sh
-bash Miniconda3-py39_4.10.3-Linux-x86_64.sh
+echo "set mouse -g on" > ~/.tmux.conf
+tmux
+```
+When you reconnect to the server after timing out / etc, just run `tmux a`.
+
+Now we will set up a local filesystem for running jobs to minimize impact on the cluster filesystem. This will take a while.
+```
+cp /scratch/work/public/overlay-fs-ext3/overlay-50G-10M.ext3.gz $SCRATCH/
+gunzip -v $SCRATCH/overlay-50G-10M.ext3.gz
+```
+
+Then, install miniconda *after* logging into a dev machine.
+```
+srun --nodes=1 --tasks-per-node=1 --cpus-per-task=1 --mem=32GB --time=1:00:00 --gres=gpu:1 --pty /bin/bash
+singularity exec --nv --overlay $SCRATCH/overlay-50G-10M.ext3:rw /scratch/work/public/singularity/cuda11.1.1-cudnn8-devel-ubuntu20.04.sif /bin/bash
+wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+ln -s $SCRATCH/python_cache/.cache
+bash ./Miniconda3-latest-Linux-x86_64.sh -b -p /ext3/miniconda3
+/ext3/miniconda3/bin/conda init
 ```
 
 Install pytorch.
