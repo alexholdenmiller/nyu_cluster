@@ -105,5 +105,5 @@ alias pyd='python -m pdb -c c'
 
 git config --global alias.b branch
 git config --global alias.ch checkout
-git config --global alias.cm commit -m
+git config --global alias.cm "commit -m"
 git config --global alias.st status
