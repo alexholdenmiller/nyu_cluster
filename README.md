@@ -48,10 +48,17 @@ pip install --upgrade wandb hydra-core hydra-submitit-launcher
 wandb login
 ```
 
-# not raedy
+# not ready
 
-singularity exec --nv --overlay $SCRATCH/overlay-50G-10M.ext3:ro /scratch/work/public/singularity/cuda11.1.1-cudnn8-devel-ubuntu20.04.sif /bin/bash
+```
+mkdir ~/bin
+echo singularity exec --nv --overlay $SCRATCH/overlay-50G-10M.ext3:rw /scratch/work/public/singularity/cuda11.1.1-cudnn8-devel-ubuntu20.04.sif /bin/bash > ~/bin/singrw
+echo singularity exec --nv --overlay $SCRATCH/overlay-50G-10M.ext3:ro /scratch/work/public/singularity/cuda11.1.1-cudnn8-devel-ubuntu20.04.sif /bin/bash > ~/bin/singro
+chmod +x ~/bin/*
+
+singro
 module load cuda/11.1.74 
+```
 
 # Test
 
@@ -64,3 +71,7 @@ Then, try to launch it on a GPU server by adding the `-m` flag (for `--multirun`
 ```
 python scratch.py -m name=1
 ```
+
+# Tips
+
+Use `myquota` command to check your storage usage.

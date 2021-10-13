@@ -97,6 +97,7 @@ if [[ -n "$PS1" ]] ; then
     export PS1
 fi
 
+export PATH="~/bin/:$PATH"
 export EDITOR=`which vim`
 
 alias py='python'

@@ -5,13 +5,13 @@ defaults:
 hydra:
   launcher:
     gres: gpu:1     # use this on the nyu greene cluster instead of partition
-    timeout_min: 1435     # just less than 1 day
-    max_num_timeout: 0     # increase if you support requeuing / preemption
+    timeout_min: 15     
     tasks_per_node: 1
-    cpus_per_task: 6
-    gpus_per_node: 1
+    cpus_per_task: 2
     nodes: 1
-    mem_per_gpu: 16     # don't go nuts
+    mem_gb: 16     # don't go nuts
+    max_num_timeout: 0     # increase if you support requeuing / preemption
+    gpus_per_node: null     # don't use this, use gres
     partition: null     # don't use this
     comment: null     # optionally use this to tell others on the cluster what your job is up to
 
