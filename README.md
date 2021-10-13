@@ -20,8 +20,10 @@ tmux
 ```
 When you reconnect to the server after timing out / etc, just run `tmux a`.
 
-Optionally set up a few basic commands...
+Optionally set up a few basic helpers...
 ```
+ln -s $SCRATCH ~/scratch
+
 mkdir ~/bin && cd ~/bin
 
 echo srun --nodes=1 --tasks-per-node=1 --cpus-per-task=1 --mem=4GB --time=0:30:00 --pty /bin/bash > get_cpu
