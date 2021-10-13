@@ -1,8 +1,14 @@
 # SLURM config
 defaults:
+  - override hydra/job_logging: colorlog
+  - override hydra/hydra_logging: colorlog
   - override hydra/launcher: submitit_slurm
 
 hydra:
+  run:  # don't put outputs in HOME, use SCRATCH instead
+    dir: $SCRATCH/outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}
+  sweep:
+    dir: $SCRATCH/multirun/${now:%Y-%m-%d}/${now:%H-%M-%S}
   launcher:
     gres: gpu:1     # use this on the nyu greene cluster instead of partition
     timeout_min: 15     

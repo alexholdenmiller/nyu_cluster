@@ -1,63 +1,60 @@
 # Setup
 
-This section installs et and uses it to connect to the HPC cluster.
 You'll need to install Cisco AnyConnect and then connect to the VPN.
 
-Make sure the following works:
+Connect to the cluster.
 ```
 ssh {netid}@greene.hpc.nyu.edu
 ```
 
-Copy a proper .bashrc file to the cluster (included one in this directory).
+Clone this repo and copy over the bashrc if you don't have one that you like.
 ```
-scp bashrc {netid}@greene.hpc.nyu.edu:~/.bashrc
+git clone https://github.com/alexholdenmiller/nyu_cluster.git
+cp ~/nyu_cluster/bashrc ~/.bashrc
 ```
 
-Then, on the cluster, run tmux.
+I recommend using tmux.
 ```
 echo "set mouse -g on" > ~/.tmux.conf
 tmux
 ```
 When you reconnect to the server after timing out / etc, just run `tmux a`.
 
-Now we will set up a local filesystem for running jobs to minimize impact on the cluster filesystem. This will take a while.
+Optionally set up a few basic commands...
 ```
-cp /scratch/work/public/overlay-fs-ext3/overlay-50G-10M.ext3.gz $SCRATCH/
-gunzip -v $SCRATCH/overlay-50G-10M.ext3.gz
+mkdir ~/bin && cd ~/bin
+
+echo srun --nodes=1 --tasks-per-node=1 --cpus-per-task=1 --mem=4GB --time=0:30:00 --pty /bin/bash > get_cpu
+echo srun --nodes=1 --tasks-per-node=1 --cpus-per-task=1 --mem=4GB --time=0:30:00 --gres=gpu:1 --pty /bin/bash > get_gpu
+echo squeue -u $USER > sjobs
+echo scancel -u $USER > stop
+
+chmod +x *
 ```
 
-Then, install miniconda *after* logging into a dev machine.
+Now, install a local miniconda on scratch.
 ```
-srun --nodes=1 --tasks-per-node=1 --cpus-per-task=1 --mem=32GB --time=1:00:00 --gres=gpu:1 --pty /bin/bash
-singularity exec --nv --overlay $SCRATCH/overlay-50G-10M.ext3:rw /scratch/work/public/singularity/cuda11.1.1-cudnn8-devel-ubuntu20.04.sif /bin/bash
-wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
 ln -s $SCRATCH/python_cache/.cache
-bash ./Miniconda3-latest-Linux-x86_64.sh -b -p /ext3/miniconda3
-/ext3/miniconda3/bin/conda init
+wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+bash ./Miniconda3-latest-Linux-x86_64.sh -b -p $SCRATCH/miniconda3
+$SCRATCH/miniconda3/bin/conda init
 ```
 
 Install pytorch.
 ```
-conda install pytorch torchvision torchaudio cudatoolkit=11.1 -c pytorch -c nvidia
+conda install pytorch torchvision cudatoolkit=11.1 -c pytorch -c nvidia
 ```
 
-Create a free account on wandb.ai
+Create a free account on wandb.ai, then install hydra & wandb.
+Cloning hydra should be unnecessary soon - they needed to update their pip release with a bug fix.
 
 ```
-pip install --upgrade wandb hydra-core hydra-submitit-launcher
-wandb login
-```
-
-# not ready
-
-```
-mkdir ~/bin
-echo singularity exec --nv --overlay $SCRATCH/overlay-50G-10M.ext3:rw /scratch/work/public/singularity/cuda11.1.1-cudnn8-devel-ubuntu20.04.sif /bin/bash > ~/bin/singrw
-echo singularity exec --nv --overlay $SCRATCH/overlay-50G-10M.ext3:ro /scratch/work/public/singularity/cuda11.1.1-cudnn8-devel-ubuntu20.04.sif /bin/bash > ~/bin/singro
-chmod +x ~/bin/*
-
-singro
-module load cuda/11.1.74 
+pip install --upgrade wandb hydra-core hydra_colorlog hydra_submitit_launcher
+git clone https://github.com/facebookresearch/hydra.git
+git checkout 1.1_branch
+cd hydra/plugins/hydra_submitit_launcher
+pip install .
+wandb login     # if this fails due to a locked file in /tmp/, use get_cpu to get a basic cpu machine and run it again
 ```
 
 # Test
@@ -69,9 +66,35 @@ python scratch.py
 
 Then, try to launch it on a GPU server by adding the `-m` flag (for `--multirun`).
 ```
-python scratch.py -m name=1
+python scratch.py -m
 ```
 
 # Tips
 
 Use `myquota` command to check your storage usage.
+```
+
+# TBD: skip this for now, need to figure out singularity
+Now we will set up a local filesystem for running jobs to minimize impact on the cluster filesystem. This will take a while.
+```
+cp /scratch/work/public/overlay-fs-ext3/overlay-50G-10M.ext3.gz $SCRATCH/
+gunzip -v $SCRATCH/overlay-50G-10M.ext3.gz
+```
+
+Then, install miniconda again into singularity*after* logging into a dev machine.
+```
+srun --nodes=1 --tasks-per-node=1 --cpus-per-task=1 --mem=32GB --time=1:00:00 --gres=gpu:1 --pty /bin/bash
+singularity exec --nv --overlay $SCRATCH/overlay-50G-10M.ext3:rw /scratch/work/public/singularity/cuda11.1.1-cudnn8-devel-ubuntu20.04.sif /bin/bash
+ln -s $SCRATCH/python_cache/.cache
+bash ./Miniconda3-latest-Linux-x86_64.sh -b -p /ext3/miniconda3
+/ext3/miniconda3/bin/conda activate
+```
+
+setup read vs read-write
+```
+echo singularity exec --nv --overlay $SCRATCH/overlay-50G-10M.ext3:rw /scratch/work/public/singularity/cuda11.1.1-cudnn8-devel-ubuntu20.04.sif /bin/bash > ~/bin/singrw
+echo singularity exec --nv --overlay $SCRATCH/overlay-50G-10M.ext3:ro /scratch/work/public/singularity/cuda11.1.1-cudnn8-devel-ubuntu20.04.sif /bin/bash > ~/bin/singro
+chmod +x ~/bin/*
+
+singro
+```
