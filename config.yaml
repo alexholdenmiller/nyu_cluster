@@ -30,6 +30,6 @@ group: default     # I use group names for different sweeps
 name: null     # name=1,2,3 is a convenient way to schedule repeats with the same other hyperparameters
 
 cuda: true     # override to manually disable cuda, otherwise will use gpu if available (silently switches to cpu if not)
-
+random_seed: 42
 log_freq: 5     # frequency of logging in *seconds*
 

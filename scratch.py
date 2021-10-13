@@ -30,6 +30,7 @@ def valid(flags : DictConfig):
 
 def main(flags : DictConfig):
     set_device(flags.cuda)
+    torch.manual_seed(flags.random_seed)
     
 
 # use hydra for config / savings outputs
