@@ -7,14 +7,6 @@ import wandb
 
 from omegaconf import DictConfig, OmegaConf
 
-
-# log to outputs/{date}/{time}/{__name__}.log
-logging.basicConfig(
-    format=(
-        "[%(levelname)s:%(process)d %(module)s:%(lineno)d %(asctime)s] " "%(message)s"
-    ),
-    level=0,
-)
 log = logging.getLogger(__name__)
 
 
@@ -57,7 +49,7 @@ def setup(flags : DictConfig):
     OmegaConf.save(flags, "config.yaml")
 
     if flags.wandb:
-        wandb.init(project=flags.wbproject, entity=flags.wbentity, config=flags)
+        wandb.init(project=flags.wbproject, entity=flags.wbentity, group=flags.group, config=flags)
     
     main(flags)
 

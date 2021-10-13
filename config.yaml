@@ -25,6 +25,7 @@ hydra:
 wandb: False     # prefer to override this on commandline to avoid cluttering your wandb profile
 wbentity: null     # I think this defaults to the `wandb login` user, so no need to override
 wbproject: scratch     # set this to appropriate project name
+group: default     # I use group names for different sweeps
 
 name: null     # name=1,2,3 is a convenient way to schedule repeats with the same other hyperparameters
 
