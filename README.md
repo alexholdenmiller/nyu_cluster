@@ -2,12 +2,23 @@
 
 You'll need to install Cisco AnyConnect and then connect to the VPN.
 
-Connect to the cluster.
+Set up VSCode from https://code.visualstudio.com/Download.
+Install the remote extension and then connect to the hpc cluster using vscode to remotely edit files after you have ssh set up.
+
+
+Make sure you can connect to the cluster (then log back out).
 ```
 ssh {netid}@greene.hpc.nyu.edu
 ```
 
-Clone this repo and copy over the bashrc if you don't have one that you like.
+Copy your ssh id so you don't need to login with your password all the time.
+```
+ssh-copy-id {netid}@greene.hpc.nyu.edu
+```
+
+Now log back in. Should work without needing a password.
+
+From the cluster, clone this repo and copy over the bashrc if you don't have one that you like.
 ```
 git clone https://github.com/alexholdenmiller/nyu_cluster.git
 cp ~/nyu_cluster/bashrc ~/.bashrc
@@ -74,9 +85,9 @@ python scratch.py -m
 # Tips
 
 Use `myquota` command to check your storage usage.
-```
 
 # TBD: skip this for now, need to figure out singularity
+
 Now we will set up a local filesystem for running jobs to minimize impact on the cluster filesystem. This will take a while.
 ```
 cp /scratch/work/public/overlay-fs-ext3/overlay-50G-10M.ext3.gz $SCRATCH/
