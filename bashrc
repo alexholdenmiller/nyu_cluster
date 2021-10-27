@@ -90,7 +90,7 @@ if [[ -n "$PS1" ]] ; then
     #Choose a color based on whether the last command succeeded or not
     PS1="$PS1"'$([[ ${?:-0} -eq 0 ]] && echo "\033[0;32m" || echo "\033[0;31m")'
     #add the time, date, user@host and full path
-    PS1="$PS1[\t \d $YEAR] $YELLOW\u$NO_COLOR@$BLUE${HOSTNAME%.facebook.com} $CYAN\w"
+    PS1="$PS1[\t \d $YEAR] $YELLOW\u$NO_COLOR@$BLUE$(hostname) $CYAN\w"
     #add the basename, the git branch the history number and the $ symbol
     #PS1="$PS1\n\W $GREEN"'$(_dotfiles_scm_info)'" $RED\! $NO_COLOR\$ "
     PS1="$PS1\n\W $GREEN $NO_COLOR\$ "
