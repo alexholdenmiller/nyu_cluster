@@ -37,8 +37,8 @@ ln -s $SCRATCH ~/scratch
 
 mkdir ~/bin && cd ~/bin
 
-echo srun --nodes=1 --tasks-per-node=1 --cpus-per-task=1 --mem=4GB --time=0:30:00 --pty /bin/bash > get_cpu
-echo srun --nodes=1 --tasks-per-node=1 --cpus-per-task=1 --mem=4GB --time=0:30:00 --gres=gpu:1 --pty /bin/bash > get_gpu
+echo srun --nodes=1 --tasks-per-node=1 --cpus-per-task=8 --mem=16GB --time=0:30:00 --pty /bin/bash > get_cpu
+echo srun --nodes=1 --tasks-per-node=1 --cpus-per-task=8 --mem=32GB --time=1:00:00 --gres=gpu:1 --pty /bin/bash > get_gpu
 echo squeue -u $USER > sjobs
 echo scancel -u $USER > stop
 
