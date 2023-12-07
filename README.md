@@ -1,6 +1,6 @@
 # Setup
 
-You'll need to install Cisco AnyConnect and then connect to the VPN.
+You'll need to install Cisco AnyConnect and then connect to the VPN: https://www.nyu.edu/life/information-technology/infrastructure/network-services/vpn.html
 
 Set up VSCode from https://code.visualstudio.com/Download.
 Install the remote extension and then connect to the hpc cluster using vscode to remotely edit files after you have ssh set up.
@@ -55,7 +55,7 @@ $SCRATCH/miniconda3/bin/conda init
 
 Install pytorch.
 ```
-conda install pytorch torchvision cudatoolkit=11.1 -c pytorch -c nvidia
+conda install pytorch torchvision torchaudio pytorch-cuda=12.1 -c pytorch -c nvidia
 ```
 
 Create a free account on wandb.ai, then install hydra & wandb.
@@ -63,10 +63,6 @@ Cloning hydra should be unnecessary soon - they needed to update their pip relea
 
 ```
 pip install --upgrade wandb hydra-core hydra_colorlog hydra_submitit_launcher
-git clone https://github.com/facebookresearch/hydra.git
-git checkout 1.1_branch
-cd hydra/plugins/hydra_submitit_launcher
-pip install .
 wandb login     # if this fails due to a locked file in /tmp/, use get_cpu to get a basic cpu machine and run it again
 ```
 
@@ -85,29 +81,3 @@ python scratch.py -m
 # Tips
 
 Use `myquota` command to check your storage usage.
-
-# TBD: skip this for now, need to figure out singularity
-
-Now we will set up a local filesystem for running jobs to minimize impact on the cluster filesystem. This will take a while.
-```
-cp /scratch/work/public/overlay-fs-ext3/overlay-50G-10M.ext3.gz $SCRATCH/
-gunzip -v $SCRATCH/overlay-50G-10M.ext3.gz
-```
-
-Then, install miniconda again into singularity*after* logging into a dev machine.
-```
-srun --nodes=1 --tasks-per-node=1 --cpus-per-task=1 --mem=32GB --time=1:00:00 --gres=gpu:1 --pty /bin/bash
-singularity exec --nv --overlay $SCRATCH/overlay-50G-10M.ext3:rw /scratch/work/public/singularity/cuda11.1.1-cudnn8-devel-ubuntu20.04.sif /bin/bash
-ln -s $SCRATCH/python_cache/.cache
-bash ./Miniconda3-latest-Linux-x86_64.sh -b -p /ext3/miniconda3
-/ext3/miniconda3/bin/conda activate
-```
-
-setup read vs read-write
-```
-echo singularity exec --nv --overlay $SCRATCH/overlay-50G-10M.ext3:rw /scratch/work/public/singularity/cuda11.1.1-cudnn8-devel-ubuntu20.04.sif /bin/bash > ~/bin/singrw
-echo singularity exec --nv --overlay $SCRATCH/overlay-50G-10M.ext3:ro /scratch/work/public/singularity/cuda11.1.1-cudnn8-devel-ubuntu20.04.sif /bin/bash > ~/bin/singro
-chmod +x ~/bin/*
-
-singro
-```
